@@ -23,16 +23,21 @@ const GoogleMapsGeofence = () => {
   const listenerRef = useRef([]);
   const options = {
     polygonOptions: shapeOptions,
+    circleOptions: shapeOptions,
+    rectangleOptions: shapeOptions,
   };
 
-  const onPolygonComplete = (polygonOverlay) => {
-    const polygonPaths = polygonOverlay
+  const getPolygonLatLng = (polygon) => {
+    return polygon
       .getPath()
       .getArray()
       .map((item) => ({ lat: item.lat(), lng: item.lng() }))
       .map((location) => {
         return new google.maps.LatLng(location.lat, location.lng);
       });
+  };
+
+  const onPolygonChange = (polygonPaths) => {
     const polygon = new google.maps.Polygon({ paths: polygonPaths });
     const allMarkers = markersData.filter((marker) => {
       const latLng = new google.maps.LatLng(marker.latitude, marker.longitude);
@@ -40,11 +45,16 @@ const GoogleMapsGeofence = () => {
       if (isInRange) return marker;
     });
     setMarkers(allMarkers);
-    polygonOverlay.setMap(null);
-    setCurrentGeofence(polygonOverlay);
-    setDrawingMode("");
   };
 
+  const onPolygonComplete = (shape) => {
+    const polygonPaths = getPolygonLatLng(shape);
+    onPolygonChange(polygonPaths);
+    shape.setMap(null);
+    setCurrentGeofence(shape);
+    setDrawingMode("");
+  };
+  
   const onEdit = useCallback(() => {
     if (polygonRef.current) {
       const nextPath = getPolygonLatLng(polygonRef.current);
