@@ -14,7 +14,7 @@ import { propertyTypes } from "../../../__mocks__/propertyTypes";
 import { Formik } from "formik";
 import GoogleMapsFiltersRange from "../google-maps-filters/google-maps-filters-range";
 
-const GoogleMapsLocationPopUp = () => {
+const GoogleMapsLocationPopUp = ({ isCurrentLocationPopUp }) => {
   const {
     activeMarker,
     setActiveMarker,
@@ -71,30 +71,32 @@ const GoogleMapsLocationPopUp = () => {
                 max={30}
                 min={0.5}
               />
-              <Formik initialValues={{ propertyType: [], maxPrice: 0, minPrice: 0 }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <Dropdown label="Вид на имота" name="propertyType" multiple>
-                      {propertyTypes.map((item) => {
-                        return (
-                          <MenuItem key={item.id} value={item.type} sx={{ ml: 2 }}>
-                            {item.type}
-                          </MenuItem>
-                        );
-                      })}
-                    </Dropdown>
+              {isCurrentLocationPopUp && (
+                <Formik initialValues={{ propertyType: [], maxPrice: 0, minPrice: 0 }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Dropdown label="Вид на имота" name="propertyType" multiple>
+                        {propertyTypes.map((item) => {
+                          return (
+                            <MenuItem key={item.id} value={item.type} sx={{ ml: 2 }}>
+                              {item.type}
+                            </MenuItem>
+                          );
+                        })}
+                      </Dropdown>
+                    </Grid>
+                    <Grid item>
+                      <GoogleMapsFiltersRange
+                        minLabel="Мин. цена"
+                        minName="minPrice"
+                        maxLabel="Мaкс. цена"
+                        maxName="maxPrice"
+                        unit="лв."
+                      />
+                    </Grid>
                   </Grid>
-                  <Grid item>
-                    <GoogleMapsFiltersRange
-                      minLabel="Мин. цена"
-                      minName="minPrice"
-                      maxLabel="Мaкс. цена"
-                      maxName="maxPrice"
-                      unit="лв."
-                    />
-                  </Grid>
-                </Grid>
-              </Formik>
+                </Formik>
+              )}
             </Grid>
           </Grid>
         </Grid>

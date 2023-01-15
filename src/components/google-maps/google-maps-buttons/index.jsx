@@ -19,7 +19,7 @@ const GoogleMapsButtons = () => {
     setCurrentGeofence,
     setMarkers,
   } = useGoogleMapsContext();
-
+  const [isCurrentLocationPopUp, setIsCurrentLocationPopUp] = useState(false);
   const clearCurrentGeofence = () => {
     setCurrentGeofence(null);
     setMarkers([]);
@@ -36,6 +36,7 @@ const GoogleMapsButtons = () => {
     } else {
       handleToggleModal();
     }
+    setIsCurrentLocationPopUp(isGetLocation);
   };
 
   return (
@@ -66,7 +67,7 @@ const GoogleMapsButtons = () => {
           )}
         </Grid>
       </GoogleMapsButtonsWrapper>
-      <GoogleMapsLocationPopUp />
+      <GoogleMapsLocationPopUp isCurrentLocationPopUp={isCurrentLocationPopUp}/>
     </>
   );
 };
