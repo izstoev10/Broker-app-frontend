@@ -3,7 +3,7 @@ import { Circle, Marker } from "@react-google-maps/api";
 import { useGoogleMapsContext } from "../../../contexts/google-maps-context";
 
 const GoogleMapsPersonalMarker = () => {
-  const { currentLocation, setCircle } = useGoogleMapsContext();
+  const { currentLocation, circle, setCircle } = useGoogleMapsContext();
   const options = {
     fillColor: "red",
     strokeColor: "red",
@@ -16,11 +16,12 @@ const GoogleMapsPersonalMarker = () => {
     geodesic: false,
     zIndex: 1,
   };
-  const onLoad = useCallback((circle) => setCircle(circle), []);
-  
+  const onLoad = useCallback((initialCircle) => {
+    if (!circle) setCircle(initialCircle);
+  }, []);
   return (
     <Marker position={currentLocation}>
-      <Circle center={currentLocation} options={options} onLoad={onLoad} />
+      <Circle center={currentLocation} radius={circle?.radius || 0} options={options} onLoad={onLoad} />
     </Marker>
   );
 };

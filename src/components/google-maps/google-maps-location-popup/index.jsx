@@ -1,60 +1,28 @@
-import React, { useCallback, useState } from "react";
-import { Modal, Typography, Slider, styled, Button, Grid } from "@mui/material";
-import ButtonCTA from "../../buttonCTA";
-import CloseIcon from "@mui/icons-material/Close";
+import React, { useState } from "react";
+import { Typography, Slider, Grid, MenuItem } from "@mui/material";
+import ButtonCTA from "../../common/buttonCTA";
 import { useGoogleMapsContext } from "../../../contexts/google-maps-context";
-
-const PopUpWrapper = styled(Modal)(({ theme }) => ({
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "90%",
-  color: "white",
-  background: theme.palette.neutral[900],
-  padding: theme.spacing(3),
-  borderRadius: theme.spacing(2),
-
-  [theme.breakpoints.up("sm")]: {
-    maxWidth: 400,
-  },
-}));
-
-const PopUpButtonGrid = styled(Grid)({
-  width: "100%",
-  display: "flex",
-  justifyContent: "flex-end",
-});
-
-const PopUpGrid = styled(Grid)({
-  height: "100%",
-  justifyContent: "space-between",
-  flexDirection: "column",
-});
-
-const PopUpHeadingGrid = styled(Grid)(({ theme }) => ({
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginBottom: theme.spacing(4),
-}));
-
-const PopUpIcon = styled(CloseIcon)({
-  fill: "white",
-  cursor: "pointer",
-  height: "100%",
-  width: "30px",
-});
+import {
+  GoogleMapsLocationPopUpButtonGrid,
+  GoogleMapsLocationPopUpGrid,
+  GoogleMapsLocationPopUpHeading,
+  GoogleMapsLocationPopUpIcon,
+  GoogleMapsLocationPopUpWrapper,
+} from "./styled";
+import Dropdown from "../../common/forms/dropdown";
+import { propertyTypes } from "../../../__mocks__/propertyTypes";
+import { Formik } from "formik";
+import GoogleMapsFiltersRange from "../google-maps-filters/google-maps-filters-range";
 
 const GoogleMapsLocationPopUp = () => {
   const {
     activeMarker,
-    currentLocation,
     setActiveMarker,
+    currentLocation,
     map,
     circle,
-    isOpenPopUp,
     handleToggleModal,
+    isOpenPopUp,
   } = useGoogleMapsContext();
   const [locationRadius, setLocationRadius] = useState(0);
   const handleGetCurrentPosition = () => {
@@ -65,7 +33,8 @@ const GoogleMapsLocationPopUp = () => {
 
     if (circle) {
       circle.setRadius(locationRadius * 1000);
-      map.fitBounds(circle.getBounds(), -100);
+      map.fitBounds(circle?.getBounds(), -100);
+      map.setCenter(currentLocation);
       map.panBy((window.innerWidth - map.getDiv().offsetWidth) / 4, 0);
     }
     handleToggleModal();
@@ -80,32 +49,60 @@ const GoogleMapsLocationPopUp = () => {
   };
 
   return (
-    <PopUpWrapper disablePortal open={isOpenPopUp} onClose={() => handleToggleModal()}>
-      <PopUpGrid container>
+    <GoogleMapsLocationPopUpWrapper
+      disablePortal
+      open={isOpenPopUp}
+      onClose={() => handleToggleModal()}
+    >
+      <GoogleMapsLocationPopUpGrid container spacing={2}>
         <Grid item>
           <Grid container>
-            <PopUpHeadingGrid item xs={12}>
-              <Typography variant="h6">Моля, изберете радиус от километри</Typography>
-              <PopUpIcon onClick={() => handleToggleModal()} />
-            </PopUpHeadingGrid>
+            <GoogleMapsLocationPopUpHeading item>
+              <Typography variant="h6">Моля, изберете опций</Typography>
+              <GoogleMapsLocationPopUpIcon onClick={() => handleToggleModal()} />
+            </GoogleMapsLocationPopUpHeading>
             <Grid item xs={12}>
               <Slider
+                valueLabelDisplay="auto"
                 value={locationRadius}
                 onChange={handleSliderChange}
-                defaultValue={0.5}
-                valueLabelDisplay="auto"
                 valueLabelFormat={getLabelFormat}
+                defaultValue={0.5}
                 max={30}
                 min={0.5}
               />
+              <Formik initialValues={{ propertyType: [], maxPrice: 0, minPrice: 0 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Dropdown label="Вид на имота" name="propertyType" multiple>
+                      {propertyTypes.map((item) => {
+                        return (
+                          <MenuItem key={item.id} value={item.type} sx={{ ml: 2 }}>
+                            {item.type}
+                          </MenuItem>
+                        );
+                      })}
+                    </Dropdown>
+                  </Grid>
+                  <Grid item>
+                    <GoogleMapsFiltersRange
+                      minLabel="Мин. цена"
+                      minName="minPrice"
+                      maxLabel="Мaкс. цена"
+                      maxName="maxPrice"
+                      unit="лв."
+                    />
+                  </Grid>
+                </Grid>
+              </Formik>
             </Grid>
           </Grid>
         </Grid>
-        <PopUpButtonGrid item>
+        <GoogleMapsLocationPopUpButtonGrid item>
           <ButtonCTA onClick={() => handleGetCurrentPosition()}>Запази</ButtonCTA>
-        </PopUpButtonGrid>
-      </PopUpGrid>
-    </PopUpWrapper>
+        </GoogleMapsLocationPopUpButtonGrid>
+      </GoogleMapsLocationPopUpGrid>
+    </GoogleMapsLocationPopUpWrapper>
   );
 };
 

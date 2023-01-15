@@ -16,6 +16,9 @@ export const theme = createTheme({
         disableElevation: true,
       },
       styleOverrides: {
+        startIcon: {
+          transform: "scale(1.1)",
+        },
         root: {
           textTransform: "none",
         },
@@ -54,14 +57,31 @@ export const theme = createTheme({
         },
       },
     },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          color: "#111827",
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        color: "#fff",
+      },
+    },
+
+    MuiInputLabel: {
+      styleOverrides: {
+        color: "#fff",
+      },
+    },
     MuiSlider: {
       styleOverrides: {
         root: {
           color: "#fff",
           "& .MuiSlider-thumb": {
             "&:focus, &:hover, &.Mui-active": {
-              boxShadow:
-                "0px 0px 0px 8px rgb(255 255 255 / 10%)",
+              boxShadow: "0px 0px 0px 8px rgb(255 255 255 / 10%)",
             },
           },
         },
@@ -71,6 +91,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: "inherit",
+          background: "inherit",
         },
       },
     },
@@ -123,7 +144,21 @@ export const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         notchedOutline: {
-          borderColor: "#E6E8F0",
+          borderColor: "rgba(255,255,255,.7)",
+        },
+      },
+    },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          color: "rgba(255,255,255,.7)",
+        },
+      },
+    },
+    MuiListItemText: {
+      styleOverrides: {
+        root: {
+          color: "rgba(0,0,0,.9)",
         },
       },
     },
@@ -177,7 +212,7 @@ export const theme = createTheme({
     },
     divider: "#E6E8F0",
     primary: {
-      main: "#5048E5",
+      main: "rgba(255,255,255,.9)",
       light: "#828DF8",
       dark: "#3832A0",
       contrastText: "#FFFFFF",
@@ -213,8 +248,8 @@ export const theme = createTheme({
       contrastText: "#FFFFFF",
     },
     text: {
-      primary: "#121828",
-      secondary: "#65748B",
+      primary: "rgba(255,255,255,.9)",
+      secondary: "rgba(0,0,0,.9)",
       disabled: "rgba(55, 65, 81, 0.48)",
     },
   },

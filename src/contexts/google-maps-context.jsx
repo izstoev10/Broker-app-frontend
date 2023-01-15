@@ -4,17 +4,27 @@ export const GoogleMapsContext = createContext(null);
 
 export function GoogleMapsProvider({ children }) {
   const [currentLocation, setCurrentLocation] = useState({ lat: 0, lng: 0 });
+  const [markers, setMarkers] = useState([]);
+  const [drawingMode, setDrawingMode] = useState("");
+  const [currentGeofence, setCurrentGeofence] = useState(null);
   const [activeMarker, setActiveMarker] = useState({ id: null, coordinates: { lat: 0, lng: 0 } });
   const [map, setMap] = useState(null);
   const [circle, setCircle] = useState(null);
   const [isOpenPopUp, setIsOpenPopUp] = useState(false);
+  const [isFilterTabOpen, setisFilterTabOpen] = useState(false);
 
   const handleToggleModal = () => {
-    setIsOpenPopUp((prev) => (prev = !prev));
+    setIsOpenPopUp((prev) => !prev);
+    setisFilterTabOpen(false);
     setActiveMarker({
       ...activeMarker,
       id: null,
     });
+  };
+
+  const handleToggleFiltersTab = () => {
+    setisFilterTabOpen((prev) => !prev);
+    setIsOpenPopUp(false);
   };
 
   const handleOpenInfoBox = (markerIndex, latitude, longitude) => {
@@ -25,8 +35,6 @@ export function GoogleMapsProvider({ children }) {
         id: markerIndex,
         coordinates,
       });
-      map.setCenter(coordinates);
-      map.panTo(coordinates);
     } else {
       setActiveMarker({
         ...activeMarker,
@@ -42,13 +50,21 @@ export function GoogleMapsProvider({ children }) {
         activeMarker,
         map,
         circle,
+        isFilterTabOpen,
         isOpenPopUp,
+        currentGeofence,
+        drawingMode,
+        markers,
+        setMarkers,
         setCurrentLocation,
         handleOpenInfoBox,
+        handleToggleFiltersTab,
         setActiveMarker,
         setMap,
         setCircle,
         handleToggleModal,
+        setDrawingMode,
+        setCurrentGeofence,
       }}
     >
       {children}
