@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
@@ -15,6 +15,7 @@ import { XCircle as XCircleIcon } from "../icons/x-circle";
 import { Logo } from "./logo";
 import { NavItem } from "./nav-item";
 import ExploreIcon from "@mui/icons-material/Explore";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 const items = [
   {
@@ -31,6 +32,18 @@ const items = [
     href: "/customers",
     icon: <UsersIcon fontSize="small" />,
     title: "Customers",
+  },
+  {
+    href: "/tenants",
+    icon: <UsersIcon fontSize="small" />,
+    title: "Tenants",
+    subItems: [
+      {
+        href: "/tenants/add",
+        icon: <AddCircleIcon fontSize="small" />,
+        title: "Add Tenant",
+      },
+    ],
   },
   {
     href: "/products",
@@ -60,6 +73,7 @@ const items = [
 ];
 
 export const DashboardSidebar = (props) => {
+  const [subItemsVisible, setSubItemsVisible] = useState(false);
   const { open, onClose } = props;
   const router = useRouter();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"), {
@@ -80,6 +94,16 @@ export const DashboardSidebar = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [router.asPath]
   );
+
+  function SubItems({ subItems }) {
+    return (
+      <Box sx={{ paddingLeft: "1rem" }}>
+        {subItems.map((item) => (
+          <NavItem key={item.title} icon={item.icon} href={item.href} title={item.title} />
+        ))}
+      </Box>
+    );
+  }
 
   const content = (
     <>
@@ -112,9 +136,18 @@ export const DashboardSidebar = (props) => {
         />
         <Box sx={{ flexGrow: 1 }}>
           {items.map((item) => (
-            <NavItem key={item.title} icon={item.icon} href={item.href} title={item.title} />
+            <React.Fragment key={item.title}>
+              <NavItem
+                onClick={() => setSubItemsVisible(!subItemsVisible)}
+                icon={item.icon}
+                href={item.href}
+                title={item.title}
+              />
+              {item.subItems && subItemsVisible && <SubItems subItems={item.subItems} />}
+            </React.Fragment>
           ))}
         </Box>
+
         <Divider sx={{ borderColor: "#2D3748" }} />
       </Box>
     </>
