@@ -7,7 +7,7 @@ import { da } from "date-fns/locale";
 const Page = () => (
   <>
     <Head>
-      <title>Tenants | Material Kit</title>
+      <title>Tenants</title>
     </Head>
     <Box
       component="main"
